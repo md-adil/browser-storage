@@ -1,8 +1,17 @@
 {
   "name": "browser-config",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "build/index.js",
   "license": "MIT",
+  "author": {
+    "name": "Adil",
+    "email": "adil.sudo@gmail.com",
+    "url": "https://md-adil.github.io"
+  },
+  "repository": {
+    "url": "https://github.com/md-adil/browser-storage",
+    "type": "git"
+  },
   "scripts": {
     "build": "tsc"
   },
