@@ -1,6 +1,6 @@
 {
   "name": "browser-config",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "build/index.js",
   "license": "MIT",
   "author": {
@@ -16,14 +16,8 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@babel/polyfill": "^7.11.5",
-    "@babel/preset-env": "^7.12.17",
-    "@babel/preset-typescript": "^7.12.17",
     "typescript": "^4.1.5"
   },
   "dependencies": {
-    "@babel/core": "^7.0.0-0",
-    "@babel/runtime": "^7.11.2",
-    "regenerator-runtime": "^0.13.7"
   }
 }
