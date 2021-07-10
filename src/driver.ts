@@ -2,6 +2,7 @@ export interface IDriver {
     set(key: string, value: string): this;
     get(key: string): string | null;
     remove(key: string): this;
+    keys(): string[];
 }
 
 const nullStorage: Storage = {
@@ -40,5 +41,9 @@ export class DefaultDriver implements IDriver {
     remove(key: string) {
         this.engine.removeItem(key);
         return this;
+    }
+
+    keys() {
+        return Object.keys(this.engine); 
     }
 }
