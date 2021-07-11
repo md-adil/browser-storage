@@ -1,8 +1,7 @@
-import Storage, { op } from "../lib/storage"
-import BrowserStorage, { IDriver } from "../";
+import BrowserStorage, { IDriver, op } from "../";
+import Storage from "../lib/storage";
 
-
-class Test extends Storage{
+class Test extends Storage {
     [key: string]: any;
 }
 

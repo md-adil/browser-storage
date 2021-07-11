@@ -1,4 +1,3 @@
-import BrowserConfig from "../lib";
 import { DefaultDriver } from "../lib/driver";
 
 const driver = new DefaultDriver();
