@@ -1,13 +1,11 @@
-import BrowserStorage, { IDriver, op } from "../";
-import Storage from "../lib/storage";
+import { BaseStorage, IDriver, op } from "../";
 
-class Test extends Storage {
+class Test extends BaseStorage {
     [key: string]: any;
 }
 
 beforeEach(() => {
     new Test()[op.clear]()
-    new BrowserStorage()[op.clear]()
 })
 
 test("id", () => {
@@ -46,32 +44,33 @@ test("clear", () => {
 
 test("cache on setting", () => {
     const data = {name: 'hello'};
-    const storage = new BrowserStorage();
+    const storage = new Test();
     storage.data = data;
     expect(storage.data).toBe(data);
-    const storage2 = new BrowserStorage();
+    const storage2 = new Test();
     expect(storage2.data).toEqual(storage.data);
 });
 
 test("cache on getting", () => {
     const data = { name: 'hello' };
-    const storage = new BrowserStorage();
+    const storage = new Test();
     storage.data = data;
-    const storage2 = new BrowserStorage();
+    const storage2 = new Test();
     expect(storage2.data).toEqual(data);
     expect(storage2.data).toBe(storage2.data);
 });
 
 test("with id and different id", () => {
     const data = { name: 'hello' };
-    const storage = new BrowserStorage("1");
+    const storage = new Test("1");
     storage.data = data;
-    const storage2 = new BrowserStorage("1");
-    const storage3 = new BrowserStorage("3");
+    const storage2 = new Test("1");
+    const storage3 = new Test("3");
     expect(storage2.data).toEqual(data);
     expect(storage3.data).not.toEqual(data);
-    expect(storage2.data).toBe(storage2.data);
     storage2[op.clear]();
+    storage[op.clear]();
+    storage3[op.clear]();
 });
 
 test("custom driver", () => {
@@ -92,10 +91,10 @@ test("custom driver", () => {
             return Object.keys(store);
         }
     }
-    const storage = new BrowserStorage("1", { driver: new Driver() });
+    const storage = new Test("1", { driver: new Driver() });
     storage.data = 'hello';
     expect(store['1[data]']).toBe('"hello"');
-    const storage2 = new BrowserStorage("1");
+    const storage2 = new Test("1");
     expect(storage2.data).not.toBe('hello');
     expect(storage2.data).toBe(undefined);
     storage[op.clear]();

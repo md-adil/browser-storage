@@ -25,7 +25,7 @@ export interface IOption {
     validity: "session" | "lifetime";
 }
 
-export default abstract class Storage {
+export default abstract class BaseStorage {
     public readonly [op.id]: string;
     public [KEY_MAPS]?: Set<Key>;
     private readonly [OPTION]: IOption;
@@ -67,13 +67,13 @@ export default abstract class Storage {
         return this;
     }
 
-    [GET](key: Key, def?: any) {
+    [GET](key: Key) {
         if (key in this[DATA]) {
             return this[DATA][key];
         }
         const val = this[OPTION].driver.get(`${this[op.id]}[${key}]`);
         if (!val) {
-            return def;
+            return;
         }
         const data = JSON.parse(val);
         this[DATA][key] = data;

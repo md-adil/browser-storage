@@ -20,14 +20,14 @@ export interface IOption {
     driver: IDriver;
     validity: "session" | "lifetime";
 }
-export default abstract class Storage {
+export default abstract class BaseStorage {
     readonly [op.id]: string;
     [KEY_MAPS]?: Set<Key>;
     private readonly [OPTION];
     private readonly [DATA];
     constructor(id?: string, option?: Partial<IOption>);
     [SET](key: Key, value: any): this;
-    [GET](key: Key, def?: any): any;
+    [GET](key: Key): any;
     [REMOVE](key: Key): this;
     [CLEAR](): number;
     get [VALUES](): any;
