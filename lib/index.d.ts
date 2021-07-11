@@ -1,7 +1,7 @@
-import Storage from "./storage";
+import Storage, { IOption } from "./storage";
 export type { IDriver } from "./driver";
 export { op } from "./storage";
-declare class BrowserConfig extends Storage {
+export default class BrowserConfig extends Storage {
+    static create<T extends any>(id?: string, opt?: IOption): T & BrowserConfig;
     [key: string]: any;
 }
-export default BrowserConfig;
