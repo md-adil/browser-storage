@@ -1,3 +1,5 @@
+/node_modules
+/coverage
 /.cache
 /dist/
-/node_modules
+/*.log
