@@ -17,5 +17,5 @@ test("removing value", () => {
 test("get keys", () => {
     driver.set("name", "Adil");
     driver.set("email", "hello world");
-    expect(driver.keys()).toEqual(["name", "email"]);
+    expect([...driver.keys()]).toEqual(["name", "email"]);
 });

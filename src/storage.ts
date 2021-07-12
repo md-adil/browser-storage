@@ -9,15 +9,20 @@ const OPTION = Symbol('option');
 const GET = Symbol('get');
 const SET = Symbol('set');
 const REMOVE = Symbol('delete');
-const KEY_MAPS = Symbol('keyMaps');
-const DATA = Symbol("Data");
+const DATA = Symbol("data");
 const CLEAR = Symbol("clear");
+const DIRTY = Symbol('dirty');
+const PENDING = Symbol('pending');
+const UPDATE = Symbol('pending');
+const REPLACE = Symbol('replace');
 
 export const op = {
     keys: KEYS,
     values: VALUES,
     id: ID,
-    clear: CLEAR
+    clear: CLEAR,
+    update: UPDATE,
+    replace: REPLACE
 } as const;
 
 export interface IOption {
@@ -26,16 +31,31 @@ export interface IOption {
 }
 
 export default abstract class BaseStorage {
-    public readonly [op.id]: string;
-    public [KEY_MAPS]?: Set<Key>;
+    static keys(instance: BaseStorage) {
+        return instance[op.keys];
+    }
+    static clear(instance: BaseStorage) {
+        return instance[op.clear];
+    }
+    static values(instance: BaseStorage) {
+        return instance[op.clear];
+    }
+    static update(instance: BaseStorage, data: object) {
+        instance[op.update] = data;
+    }
+    static id(instance: BaseStorage) {
+        return instance[ID];
+    }
+    public readonly [ID]: string;
     private readonly [OPTION]: IOption;
     private readonly [DATA]: Record<string, any> = {};
+    private readonly [DIRTY] = new Set<Key>();
+    private [PENDING] = false;
     constructor(id?: string, option: Partial<IOption> = {} ) {
         if (!id) {
             id = (this as any).constructor.name;
         }
         this[op.id] = id!;
-
         if (!option.driver) {
             option.driver = new DefaultDriver(option.validity === "session");
         }
@@ -47,7 +67,7 @@ export default abstract class BaseStorage {
             },
             get(target, property) {
                 if (property in target) {
-                    return (target as any)[property as string];
+                    return (target as any)[property];
                 }
                 return target[GET](property as string);
             },
@@ -58,12 +78,32 @@ export default abstract class BaseStorage {
         });
     }
 
-    [SET](key: Key, value: any) {
-        if (this[KEY_MAPS]) {
-            this[KEY_MAPS]!.add(key);
+    set [UPDATE](value: Record<Key, any>) {
+        for (const key in value) {
+            this[SET](key, value);
         }
+    }
+
+    set [REPLACE](value: Record<Key, any>) {
+        this[CLEAR];
+        this[UPDATE] = value;
+    }
+
+    [SET](key: Key, value: any) {
         this[DATA][key] = value;
-        this[OPTION].driver.set(`${this[op.id]}[${key}]`, JSON.stringify(value));
+        this[DIRTY].add(key);
+
+        if (this[PENDING]) {
+            return this;
+        }
+        this[PENDING] = true;
+        setTimeout(() => {
+            for (const dirty of this[DIRTY]) {
+                this[OPTION].driver.set(`${this[op.id]}[${dirty}]`, JSON.stringify(this[DATA][dirty]));
+            }
+            this[PENDING] = false
+            this[DIRTY].clear();
+        }, 0)
         return this;
     }
 
@@ -84,14 +124,12 @@ export default abstract class BaseStorage {
         if (key in this[DATA]) {
             delete this[DATA][key];
         }
-        if (this[KEY_MAPS]) {
-            this[KEY_MAPS]!.delete(key);
-        }
+        this[DIRTY].delete(key);
         this[OPTION].driver.remove(`${this[op.id]}[${key}]`);
         return this;
     }
 
-    [CLEAR]() {
+    get [CLEAR]() {
         let length = 0; 
         for (const key of this[op.keys]) {
             this[REMOVE](key);
@@ -102,31 +140,39 @@ export default abstract class BaseStorage {
 
     get [VALUES]() {
         const _values: any = {};
-        for(const key of this[KEYS]) {
-            _values[key] = this[GET](key);
+        for(const [key, value] of this) {
+            _values[key] = value;
         }
         return _values;
     }
 
     get [KEYS]() {
-        if (this[KEY_MAPS]) {
-            return [...this[KEY_MAPS]!];
-        }
-        const set = new Set<string>();
-        this[OPTION].driver.keys().forEach(key => {
-            const matched = key.match(new RegExp(`${this[op.id]}\\[(.+)\\]$`));
-            if (!matched) {
-                return;
-            }
-            set.add(matched[1]);
-        });
-        this[KEY_MAPS] = set;
-        return [...set];
+        return [...getKeys(this[ID], this[DATA], this[OPTION].driver)];
     }
 
     *[Symbol.iterator]() {
-        for (const key of this[KEYS]) {
+        for (const key of getKeys(this[ID], this[DATA], this[OPTION].driver)) {
             yield [ key, this[GET](key) ];
         }
+    }
+}
+
+function * getKeys(id: string, data: object, driver: IDriver) {
+    for (const key in data) {
+        yield key;
+    }
+    for (const i of driver.keys()) {
+        const matched = i.match(new RegExp(`${id}\\[(.+)\\]$`));
+        if (!matched) {
+            return;
+        }
+        const key = matched[1];
+        if (!key) {
+            continue;
+        }
+        if (key in data) {
+            continue;
+        }
+        yield key;
     }
 }

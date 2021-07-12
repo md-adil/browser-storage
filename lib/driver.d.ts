@@ -2,7 +2,7 @@ export interface IDriver {
     set(key: string, value: string): this;
     get(key: string): string | null;
     remove(key: string): this;
-    keys(): string[];
+    keys(): string[] | Iterable<string>;
 }
 export declare class DefaultDriver implements IDriver {
     private readonly engine;
@@ -10,5 +10,5 @@ export declare class DefaultDriver implements IDriver {
     get(key: string): string | null;
     set(key: string, value: string): this;
     remove(key: string): this;
-    keys(): string[];
+    keys(): Generator<string, void, unknown>;
 }

@@ -2,7 +2,7 @@ export interface IDriver {
     set(key: string, value: string): this;
     get(key: string): string | null;
     remove(key: string): this;
-    keys(): string[];
+    keys(): string[] | Iterable<string>;
 }
 
 const nullStorage: Storage = {
@@ -14,9 +14,6 @@ const nullStorage: Storage = {
     },
     removeItem() {
         console.warn('Storage not supported');
-    },
-    keys() {
-        return [];
     }
 } as any;
 
@@ -46,7 +43,12 @@ export class DefaultDriver implements IDriver {
         return this;
     }
 
-    keys() {
-        return Object.keys(this.engine); 
+    *keys() {
+        for (const i in this.engine) {
+            if (!Object.prototype.hasOwnProperty.call(this.engine, i)) {
+                continue;
+            }
+            yield i;
+        } 
     }
 }
