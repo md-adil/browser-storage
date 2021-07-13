@@ -1,4 +1,4 @@
-import { BaseStorage, IDriver, op } from "../";
+import { BaseStorage, IDriver } from "../";
 import { sleep } from "./util";
 
 class Test extends BaseStorage {
@@ -26,17 +26,13 @@ test("setting/getting/removing", () => {
 });
 
 test("keys", async () => {
-    const storage = new Test();
+    const storage = new Test('keys');
     storage.name = "Hello";
     expect([...Test.keys(storage)]).toEqual(["name"]);
-    await sleep(1);
-    const storage2 = new Test();
-    expect([...Test.keys(storage2)]).toEqual(["name"]);
-    Test.clear(storage);
 });
 
 test("values", () => {
-    const storage = new Test();
+    const storage = new Test('values');
     storage.name = "Hello";
     expect(Test.values(storage)).toEqual({name: "Hello"});
 });
@@ -49,12 +45,13 @@ test("clear", () => {
 });
 
 test("cache on setting", async () => {
-    const data = {name: 'hello'};
+    const data = { name: 'hello' };
     const storage = new Test();
     storage.data = data;
     expect(storage.data).toBe(data);
-    await sleep(1);
     const storage2 = new Test();
+    expect(storage2.data).not.toEqual(storage.data);
+    await sleep(1);
     expect(storage2.data).toEqual(storage.data);
 });
 
@@ -64,6 +61,7 @@ test("cache on getting", async () => {
     storage.data = data;
     const storage2 = new Test();
     expect(storage2.data).toBe(storage2.data);
+    expect(storage2.data).not.toEqual(data);
     await sleep(1)
     expect(storage2.data).toEqual(data);
 });
