@@ -6,15 +6,15 @@ class Test extends BaseStorage {
 }
 
 beforeEach( async () => {
-    new Test()[op.clear]
+    Test.clear( new Test())
     await sleep(1);
 })
 
 test("id", () => {
     const storage = new Test();
-    expect(storage[op.id]).toBe("Test");
+    expect(Test.id(storage)).toBe("Test");
     const storage2 = new Test('test2');
-    expect(storage2[op.id]).toBe("test2");
+    expect(Test.id(storage2)).toBe("test2");
 });
 
 test("setting/getting/removing", () => {
@@ -25,25 +25,27 @@ test("setting/getting/removing", () => {
     expect(storage.name).toBe(undefined);
 });
 
-test("keys", () => {
+test("keys", async () => {
     const storage = new Test();
     storage.name = "Hello";
-    expect(storage[op.keys]).toEqual(["name"]);
+    expect([...Test.keys(storage)]).toEqual(["name"]);
+    await sleep(1);
     const storage2 = new Test();
-    expect(storage2[op.keys]).toEqual(["name"]);
+    expect([...Test.keys(storage2)]).toEqual(["name"]);
+    Test.clear(storage);
 });
 
 test("values", () => {
     const storage = new Test();
     storage.name = "Hello";
-    expect(storage[op.values]).toEqual({name: "Hello"});
+    expect(Test.values(storage)).toEqual({name: "Hello"});
 });
 
 test("clear", () => {
     const storage = new Test();
     storage.name = "Hello";
-    expect(storage[op.clear]).toBe(1);
-    expect(storage[op.values]).toEqual({});
+    expect(Test.clear(storage)).toBe(1);
+    expect(Test.values(storage)).toEqual({});
 });
 
 test("cache on setting", async () => {
@@ -75,9 +77,9 @@ test("with id and different id", async () => {
     await sleep(1);
     expect(storage2.data).toEqual(data);
     expect(storage3.data).not.toEqual(data);
-    storage2[op.clear];
-    storage[op.clear];
-    storage3[op.clear];
+    Test.clear(storage);
+    Test.clear(storage2);
+    Test.clear(storage3);
 });
 
 test("custom driver", async () => {
