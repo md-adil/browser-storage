@@ -1,12 +1,12 @@
 # Browser config
 
-I know you can use localStorage but is this convenient and performed like accessing property from an object.
+You can use localStorage. But is this convenient and performed like accessing property from an object ?
 
 ## Installation
 
     yarn add browser-config
 
-importing the library
+Importing the library
 
 ```js
 import Store from "browser-config";
@@ -17,24 +17,28 @@ const config = new Store();
 
 // setting value
 config.name = "Hello"
-
-// by default it save data to the cache only and update to native storage in next event loop.
+// By default it save data to the cache only and update/serialize data in next event loop.
 
 // getting value
 config.name // "hello"
-// you can get config.name again and again it wont request to native storage and deserialize instead it will cache data
+// you can get config.name again and again it won't request to storage or deserialize, instead it will get data from then cache only
 
-console.log([...Store.keys(config)])
-// by default Store.keys return generators you need to spread it to use
+[...Store.keys(config)] // ["name"]
+// Store.keys return generators, you need to spread it to use as an array.
 
-Object.fromEntries(config) // {name: "Hello"}
-Store.values(config) // {name: "Hello"}
+Object.fromEntries(config) // { name: "Hello" }
+// or 
+Store.values(config) // { name: "Hello" }
 
 // deleting
-delete config.name //
+delete config.name
 config.name // undefined
 
+// clearing all the data
+Store.clear(config) // length of cleared items;
+
 // can support any serializable data
+
 config.users = [{ name: 'Hello' }]
 config.users // [{ name: 'Hello' }]
 
@@ -59,22 +63,22 @@ config1.name // Something
 config2.name // Something else
 ```
 
-## Allow iterate
+## Iterate through all the data
 ```js
-const config = new Store('default') // iterable
+const config = new Store('default')
 config.name = 'Something'
 config.email = 'johndoe@example.com'
 for (const [ key, value ] of config) {
-    console.log({ key, value }) // { key: 'email', value: 'Something' } and on
+    console.log({ key, value }) // { key: 'email', value: 'Something' } and so on...
 }
 ```
 
 ## Session storage
-By default it will save to localStorage and localStorage is permanent, you can save it sessionStorage as well
+By default it will save to localStorage and it is permanent, you can save it sessionStorage as well.
 
 ```ts
 const config = new Store('some_id', {
-    validity: "session"
+   validity: "session"
 });
 
 config.name = "Hello" // will be saved till browser closed.

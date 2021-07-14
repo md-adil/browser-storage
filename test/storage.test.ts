@@ -1,5 +1,4 @@
 import { BaseStorage, IDriver } from "../";
-import { sleep } from "./util";
 
 class Test extends BaseStorage {
     [key: string]: any;
@@ -8,7 +7,7 @@ class Test extends BaseStorage {
 beforeEach( async () => {
     jest.useFakeTimers();
     Test.clear(new Test());
-    jest.advanceTimersByTime(1);
+    jest.advanceTimersToNextTimer();
 });
 
 afterEach(() => {
@@ -56,7 +55,7 @@ test("cache on setting", async () => {
     expect(storage.data).toBe(data);
     const storage2 = new Test();
     expect(storage2.data).not.toEqual(storage.data);
-    jest.advanceTimersByTime(1);
+    jest.advanceTimersToNextTimer();
     expect(storage2.data).toEqual(storage.data);
 });
 
@@ -69,6 +68,16 @@ test("cache on getting", async () => {
     expect(storage2.data).not.toEqual(data);
     jest.advanceTimersToNextTimer();
     expect(storage2.data).toEqual(data);
+});
+
+test("cache on removing", async () => {
+    const storage = new Test('cache remove');
+    storage.data = 'hello';
+    jest.advanceTimersToNextTimer();
+    delete storage.data;
+    expect(localStorage.getItem('cache remove[data]')).toBeTruthy();
+    jest.advanceTimersToNextTimer();
+    expect(localStorage.getItem('cache remove[data]')).toBeNull();
 });
 
 test("with id and different id", async () => {
@@ -107,4 +116,14 @@ test("custom driver", async () => {
     storage.data = 'hello';
     jest.advanceTimersToNextTimer();
     expect(store['1[data]']).toBe('"hello"');
+});
+
+
+test("validity", () => {
+    const test = new Test('validity', {
+        validity: "session"
+    });
+    test.name = "Hello";
+    jest.advanceTimersToNextTimer();
+    expect(sessionStorage.getItem(`validity[name]`)).toBe(JSON.stringify('Hello'));
 });

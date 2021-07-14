@@ -1,5 +1,4 @@
 import BrowserConfig from "../lib"
-import { sleep } from "./util";
 
 test("set/get/delete/by/id", async () => {
     const store = new BrowserConfig();
@@ -11,6 +10,7 @@ test("set/get/delete/by/id", async () => {
 })
 
 test("create with typed", async () => {
+    jest.useFakeTimers();
     interface IPerson {
         name?: string;
         email?: string;
@@ -18,7 +18,8 @@ test("create with typed", async () => {
     const store = BrowserConfig.create<IPerson>('create with typed');
     store.name = "Adil";
     expect(store.name).toBe("Adil");
-    await sleep(1);
+    jest.advanceTimersToNextTimer();
     expect([...BrowserConfig.keys(store)]).toEqual(["name"]);
     expect(BrowserConfig.clear(store)).toBe(1);
+    jest.useRealTimers();
 });
