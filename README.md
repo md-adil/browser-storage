@@ -51,6 +51,7 @@ config2.name = 'Something else'
 config1.name // Something
 config2.name // Something else
 ```
+
 ## Allow iterate
 ```js
 const config = new Store('default') // iterable
@@ -62,7 +63,7 @@ for (const [ key, value ] of config) {
 ```
 
 ## Session storage
-By default it will save to localStorage and localStorage is permanent, you can save it sessionStorage as wel
+By default it will save to localStorage and localStorage is permanent, you can save it sessionStorage as well
 
 ```ts
 const config = new Store('some_id', {
@@ -99,7 +100,7 @@ class Driver implements IDriver {
 
     get(key: string) {
         // sourced from https://www.w3schools.com/js/js_cookies.asp
-        let name = cname + "=";
+        let name = key + "=";
         let decodedCookie = decodeURIComponent(document.cookie);
         let ca = decodedCookie.split(';');
         for(let i = 0; i <ca.length; i++) {
