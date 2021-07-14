@@ -23,7 +23,7 @@ config.name = "Hello"
 
 // getting value
 config.name // "hello"
-// you can get config.name again and again it won't request to storage or deserialize, instead it will get data from then cache only
+// you can get config.name again and again it won't request to storage or deserialize, instead it will get data from the cache only
 
 [...Store.keys(config)] // ["name"]
 // Store.keys return generators, you need to spread it to use as an array.
@@ -148,12 +148,12 @@ expect(storage.data).toBe('hello');
 ### instantiate
 
 ```ts
-    import Store from "browser-config";
-    const store = new Store(id, option)
+import Store from "browser-config";
+const store = new Store(id, option)
 ```
 * `id?: string` unique for unique storage
 *  `option?`
-    * `validity: "session" | "lifetime"` validity of the data for particular storage.
+    * `validity: "session" | "permanent"` validity of the data for particular storage, default is `permanent`.
     * `driver: IDriver` custom driver
 
 

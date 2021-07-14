@@ -10,7 +10,7 @@ declare const DIRTY: unique symbol;
 declare const PENDING: unique symbol;
 export interface IOption {
     driver: IDriver;
-    validity: "session" | "lifetime";
+    validity: "session" | "permanent";
 }
 export default abstract class BaseStorage {
     static keys(instance: BaseStorage): Generator<string, void, unknown>;

@@ -12,7 +12,7 @@ const PENDING = Symbol('pending');
 
 export interface IOption {
     driver: IDriver;
-    validity: "session" | "lifetime";
+    validity: "session" | "permanent";
 }
 
 export default abstract class BaseStorage {
