@@ -1,6 +1,8 @@
 # Browser config
 
-You can use localStorage. But is this convenient and performed like accessing property from an object ?
+You can use `localStorage` or `sessionStorage`. But is this convenient and performed like accessing property from an object ? No it's not.
+
+## Examples
 
 ## Installation
 
@@ -140,3 +142,25 @@ const storage = new Store("1", { driver: new Driver() });
 storage.data = 'hello';
 expect(storage.data).toBe('hello');
 ```
+
+## References
+
+### instantiate
+
+```ts
+    import Store from "browser-config";
+    const store = new Store(id, option)
+```
+* `id?: string` unique for unique storage
+*  `option?`
+    * `validity: "session" | "lifetime"` validity of the data for particular storage.
+    * `driver: IDriver` custom driver
+
+
+### static methods
+* `Store.id(store): string` generated or passed id
+* `Store.keys(store: Store): Iterable<string>` get all the keys
+* `Store.values(store: Store): {[key: string]: any}` get all the values
+* `Store.clear(store): string` clearing all the values
+* `Store.update(store, data: object)` update values in bulk
+* `Store.set(store, data: object)` it will delete all the existing value and set the provided object
