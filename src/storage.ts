@@ -89,7 +89,7 @@ export default abstract class BaseStorage {
     };
     constructor(id?: string, option: Partial<IOption> = {} ) {
         if (!id) {
-            id = this.constructor.name;
+            id = getId(this.constructor.name);
         }
         this[ID] = id!;
         if (!option.driver) {
@@ -169,4 +169,12 @@ export default abstract class BaseStorage {
             yield [ key, this[GET](key) ];
         }
     }
+}
+
+function getId(str: string, n = 8) {
+    let code = '';
+    for (let i = 0; i < str.length; i++) {
+        code += str.charCodeAt(i);
+    }
+    return Number(code).toString(16).substr(0, n);
 }

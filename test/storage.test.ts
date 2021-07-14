@@ -8,7 +8,7 @@ class Test extends BaseStorage {
 beforeEach( async () => {
     Test.clear( new Test())
     await sleep(1);
-})
+});
 
 test("id", () => {
     const storage = new Test();
