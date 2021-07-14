@@ -6,8 +6,13 @@ I know you can use localStorage but is this convenient and performed like access
 
     yarn add browser-config
 
+importing the library
+
 ```js
 import Store from "browser-config";
+```
+
+```js
 const config = new Store();
 
 // setting value
@@ -38,7 +43,9 @@ config.users.push({name: 'New User'}); // x will not work
 // adding new value to array
 config.users = [ ...config.users, { name: 'New User'}]
 ```
-Multiple instances
+
+## Multiple instances
+
 ```js
 
 const config1 = new Store('abcd'); // id

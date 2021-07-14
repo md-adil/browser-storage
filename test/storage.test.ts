@@ -6,13 +6,18 @@ class Test extends BaseStorage {
 }
 
 beforeEach( async () => {
-    Test.clear( new Test())
-    await sleep(1);
+    jest.useFakeTimers();
+    Test.clear(new Test());
+    jest.advanceTimersByTime(1);
 });
+
+afterEach(() => {
+    jest.useRealTimers();
+})
 
 test("id", () => {
     const storage = new Test();
-    expect(Test.id(storage)).toBe("Test");
+    expect(Test.id(storage)).toBe("1394d12c");
     const storage2 = new Test('test2');
     expect(Test.id(storage2)).toBe("test2");
 });
@@ -51,7 +56,7 @@ test("cache on setting", async () => {
     expect(storage.data).toBe(data);
     const storage2 = new Test();
     expect(storage2.data).not.toEqual(storage.data);
-    await sleep(1);
+    jest.advanceTimersByTime(1);
     expect(storage2.data).toEqual(storage.data);
 });
 
@@ -62,7 +67,7 @@ test("cache on getting", async () => {
     const storage2 = new Test();
     expect(storage2.data).toBe(storage2.data);
     expect(storage2.data).not.toEqual(data);
-    await sleep(1)
+    jest.advanceTimersToNextTimer();
     expect(storage2.data).toEqual(data);
 });
 
@@ -72,7 +77,7 @@ test("with id and different id", async () => {
     storage.data = data;
     const storage2 = new Test("1");
     const storage3 = new Test("3");
-    await sleep(1);
+    jest.advanceTimersToNextTimer();
     expect(storage2.data).toEqual(data);
     expect(storage3.data).not.toEqual(data);
     Test.clear(storage);
@@ -100,6 +105,6 @@ test("custom driver", async () => {
     }
     const storage = new Test("1", { driver: new Driver() });
     storage.data = 'hello';
-    await sleep(1);
+    jest.advanceTimersToNextTimer();
     expect(store['1[data]']).toBe('"hello"');
 });
