@@ -1,8 +1,15 @@
 {
   "name": "browser-config",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "main": "./lib/index.js",
   "license": "MIT",
+  "description": "localStorage/sessionStorage wrapper for convenient access.",
+  "keywords": [
+    "localStorage",
+    "sessionStorage",
+    "cache",
+    "browser permanent storage"
+  ],
   "author": {
     "name": "Adil",
     "email": "adil.sudo@gmail.com",
@@ -21,7 +28,6 @@
     "@babel/preset-typescript": "^7.14.5",
     "@types/jest": "^26.0.24",
     "jest": "^27.0.6",
-    "ts-node": "^10.1.0",
     "typescript": "^4.1.5"
   },
   "dependencies": {}
