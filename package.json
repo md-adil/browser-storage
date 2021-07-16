@@ -21,7 +21,8 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "test": "jest --env=jsdom"
+    "test": "jest --env=jsdom",
+    "test:watch": "yarn test --watch ./test"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.14.7",

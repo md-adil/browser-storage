@@ -1,5 +1,23 @@
 import { BaseStorage, IDriver } from "../";
 
+class Driver implements IDriver {
+    public store: Record<string, string> = {};
+    set(key: string, val: string) {
+        this.store[key] = val;
+        return this;
+    }
+    get(key: string) {
+        return this.store[key];
+    }
+    remove(key: string) {
+        delete this.store[key];
+        return this;
+    }
+    keys() {
+        return Object.keys(this.store);
+    }
+}
+
 class Test extends BaseStorage {
     [key: string]: any;
 }
@@ -50,13 +68,24 @@ test("clear", () => {
 
 test("cache on setting", async () => {
     const data = { name: 'hello' };
-    const storage = new Test();
+    const settingFn = jest.fn();
+    class NewDriver extends Driver {
+        set(key: string, value: string) {
+            super.set(key, value);
+            settingFn();
+            return this;
+        }
+    }
+    const driver = new NewDriver();
+    const storage = new Test('cache-setting', { driver });
+    storage.data = data;
+    storage.data = data;
     storage.data = data;
     expect(storage.data).toBe(data);
-    const storage2 = new Test();
-    expect(storage2.data).not.toEqual(storage.data);
+    expect(settingFn.mock.calls.length).toBe(0);
     jest.advanceTimersToNextTimer();
-    expect(storage2.data).toEqual(storage.data);
+    expect(settingFn.mock.calls.length).toBe(1);
+    expect(driver.store[`cache-setting[data]`]).toBe(JSON.stringify(data));
 });
 
 test("cache on getting", async () => {
@@ -95,27 +124,12 @@ test("with id and different id", async () => {
 });
 
 test("custom driver", async () => {
-    const store: any = {}
-    class Driver implements IDriver {
-        set(key: string, val: string) {
-            store[key] = val;
-            return this;
-        }
-        get(key: string) {
-            return store[key];
-        }
-        remove(key: string) {
-            delete store[key];
-            return this;
-        }
-        keys() {
-            return Object.keys(store);
-        }
-    }
-    const storage = new Test("1", { driver: new Driver() });
+    
+    const driver = new Driver();
+    const storage = new Test("1", { driver });
     storage.data = 'hello';
     jest.advanceTimersToNextTimer();
-    expect(store['1[data]']).toBe('"hello"');
+    expect(driver.store['1[data]']).toBe('"hello"');
 });
 
 

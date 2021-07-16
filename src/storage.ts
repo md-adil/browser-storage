@@ -171,10 +171,10 @@ export default abstract class BaseStorage {
     }
 }
 
-function getId(str: string, n = 8) {
+function getId(name: string, n = 8) {
     let code = '';
-    for (let i = 0; i < str.length; i++) {
-        code += str.charCodeAt(i);
+    for (let i = 0; i < name.length; i++) {
+        code += name.charCodeAt(i);
     }
     return Number(code).toString(16).substr(0, n);
 }
