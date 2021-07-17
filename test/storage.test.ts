@@ -39,12 +39,35 @@ test("id", () => {
     expect(Test.id(storage2)).toBe("test2");
 });
 
+test('setting', () => {
+    const test = new Test();
+    const settingFn = jest.spyOn(Test.driver(test), 'set');
+    test.name = 'apple';
+    test.name = 'mango';
+    expect(settingFn).not.toHaveBeenCalled();
+    jest.advanceTimersToNextTimer();
+    expect(settingFn).toHaveBeenNthCalledWith(1, `${Test.id(test)}[name]`, JSON.stringify('mango'));
+    settingFn.mockRestore();
+})
+
+test('getting', () => {
+    const test = new Test();
+    const gettingFn = jest.spyOn(Test.driver(test), 'get');
+    gettingFn.mockReturnValue('"hello world"')
+    expect(test.name).toBe('hello world');
+    expect(test.name).toBe('hello world');
+    expect(test.name).toBe('hello world');
+    expect(gettingFn).toHaveBeenNthCalledWith(1, `${Test.id(test)}[name]`);
+    gettingFn.mockRestore();
+})
+
 test("setting/getting/removing", () => {
     const storage = new Test();
     storage.name = "Hello";
     expect(storage.name).toBe("Hello");
     delete storage.name;
     expect(storage.name).toBe(undefined);
+    expect(storage.name2).toBe(undefined);
 });
 
 test("keys", async () => {
@@ -64,39 +87,6 @@ test("clear", () => {
     storage.name = "Hello";
     expect(Test.clear(storage)).toBe(1);
     expect(Test.values(storage)).toEqual({});
-});
-
-test("cache on setting", async () => {
-    const data = { name: 'hello' };
-    const settingFn = jest.fn();
-    class NewDriver extends Driver {
-        set(key: string, value: string) {
-            super.set(key, value);
-            settingFn();
-            return this;
-        }
-    }
-    const driver = new NewDriver();
-    const storage = new Test('cache-setting', { driver });
-    storage.data = data;
-    storage.data = data;
-    storage.data = data;
-    expect(storage.data).toBe(data);
-    expect(settingFn.mock.calls.length).toBe(0);
-    jest.advanceTimersToNextTimer();
-    expect(settingFn.mock.calls.length).toBe(1);
-    expect(driver.store[`cache-setting[data]`]).toBe(JSON.stringify(data));
-});
-
-test("cache on getting", async () => {
-    const data = { name: 'hello' };
-    const storage = new Test();
-    storage.data = data;
-    const storage2 = new Test();
-    expect(storage2.data).toBe(storage2.data);
-    expect(storage2.data).not.toEqual(data);
-    jest.advanceTimersToNextTimer();
-    expect(storage2.data).toEqual(data);
 });
 
 test("cache on removing", async () => {
@@ -124,7 +114,6 @@ test("with id and different id", async () => {
 });
 
 test("custom driver", async () => {
-    
     const driver = new Driver();
     const storage = new Test("1", { driver });
     storage.data = 'hello';

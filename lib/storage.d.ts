@@ -14,6 +14,7 @@ export interface IOption {
 }
 export default abstract class BaseStorage {
     static keys(instance: BaseStorage): Generator<string, void, unknown>;
+    static driver(instance: BaseStorage): IDriver;
     static clear(instance: BaseStorage): number;
     static values(instance: BaseStorage): any;
     static update(instance: BaseStorage, data: Record<string, any>): BaseStorage;
