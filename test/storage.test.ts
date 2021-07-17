@@ -130,3 +130,11 @@ test("validity", () => {
     jest.advanceTimersToNextTimer();
     expect(sessionStorage.getItem(`validity[name]`)).toBe(JSON.stringify('Hello'));
 });
+
+
+test('toJSON', () => {
+    const test = new Test('tojson');
+    test.name = "Adil";
+    test.email = "adil.sudo@gmail.com";
+    expect(JSON.stringify(test)).toBe(JSON.stringify({ name: "Adil", email: "adil.sudo@gmail.com" }));
+});

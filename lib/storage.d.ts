@@ -29,6 +29,7 @@ export default abstract class BaseStorage {
     [SET](key: Key, value: any): this;
     [GET](key: Key): any;
     [REMOVE](key: Key): this;
+    toJSON(): any;
     [Symbol.iterator](): Generator<any[], void, unknown>;
 }
 export {};

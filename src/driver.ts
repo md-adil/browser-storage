@@ -44,11 +44,8 @@ export class DefaultDriver implements IDriver {
     }
 
     *keys() {
-        for (const i in this.engine) {
-            if (!Object.prototype.hasOwnProperty.call(this.engine, i)) {
-                continue;
-            }
-            yield i;
-        } 
+        for (let i = 0; i < this.engine.length; i++) {
+            yield this.engine.key(i)!;
+        }
     }
 }

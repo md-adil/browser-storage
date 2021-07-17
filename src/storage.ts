@@ -168,6 +168,10 @@ export default abstract class BaseStorage {
         return this;
     }
 
+    toJSON() {
+        return BaseStorage.values(this);
+    }
+
     *[Symbol.iterator]() {
         for (const key of BaseStorage.keys(this)) {
             yield [ key, this[GET](key) ];
