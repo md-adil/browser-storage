@@ -121,7 +121,6 @@ test("custom driver", async () => {
     expect(driver.store['1[data]']).toBe('"hello"');
 });
 
-
 test("validity", () => {
     const test = new Test('validity', {
         validity: "session"
@@ -131,10 +130,17 @@ test("validity", () => {
     expect(sessionStorage.getItem(`validity[name]`)).toBe(JSON.stringify('Hello'));
 });
 
-
 test('toJSON', () => {
     const test = new Test('tojson');
     test.name = "Adil";
     test.email = "adil.sudo@gmail.com";
     expect(JSON.stringify(test)).toBe(JSON.stringify({ name: "Adil", email: "adil.sudo@gmail.com" }));
+});
+
+test('toJSON as key', () => {
+    const test = new Test('tojsonkey');
+    (test as any).toJSON = "Adil";
+    jest.advanceTimersToNextTimer();
+    expect(test.toJSON).toBeInstanceOf(Function);
+    expect(test.toJSON().toJSON).toBe('Adil');
 });

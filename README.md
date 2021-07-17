@@ -144,6 +144,24 @@ storage.data = 'hello';
 expect(storage.data).toBe('hello');
 ```
 
+### toJSON
+
+```ts
+const store = new Store();
+
+store.name = "hello"
+store.email = "hello@world.com";
+
+JSON.stringify(store) // {"name": "hello", "email": "hello@world.com"}
+store.toJSON = "Something else";
+// toJSON is built-in method and it only method/property built-in it doesn't mean you can't use this as a property.
+// you can still use but there is a slightly different approach to accessing the value
+// if using typescript use can see type error
+
+store.toJSON // [Function toJSON]
+store.toJSON().toJSON // 'Something else'
+```
+
 ## References
 
 ### instantiate
