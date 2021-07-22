@@ -19,11 +19,11 @@ const config = new Store();
 
 // setting value
 config.name = "Hello"
-// By default it save data to the cache only and update/serialize data in next event loop.
+// it will save the data to the cache only and serialize / update to localStorage in next loop.
 
 // getting value
 config.name // "hello"
-// you can get config.name again and again it won't request to storage or deserialize,
+// you can get config.name again and again it won't request to localStorage or deserialize,
 // instead it will get data from the cache only.
 
 [...Store.keys(config)] // ["name"]
@@ -165,3 +165,6 @@ const store = new Store(id, option)
 * `Store.clear(store): string` clearing all the values
 * `Store.update(store, data: object)` update values in bulk
 * `Store.set(store, data: object)` it will delete all the existing value and set the provided object
+* `Store.clearCache(store)` it will delete cache
+* `Store.savePending(store)` when set any property, it does save everything to cache only and put data to localStorage in next event, but you can force this to happen in the current context
+

@@ -10,6 +10,11 @@ const DATA = Symbol("data");
 const DIRTY = Symbol('dirty');
 const PENDING = Symbol('pending');
 
+
+function isOwn(obj: object, prop: any) {
+    return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
 export interface IOption {
     driver: IDriver;
     validity: "session" | "permanent";
@@ -48,6 +53,27 @@ export default abstract class BaseStorage {
         return count;
     }
 
+    static savePending(instance: BaseStorage) {
+        for (const dirty of instance[DIRTY].update) {
+            const key = `${instance[ID]}[${dirty}]`, value = instance[DATA][dirty];
+            if (typeof value === "undefined") {
+                instance[OPTION].driver.remove(key);
+                continue;
+            }
+            instance[OPTION].driver.set(key, JSON.stringify(value));
+        }
+        instance[PENDING].update = false
+        instance[DIRTY].update.clear();
+    }
+
+    static clearCache(instance: BaseStorage) {
+        this.savePending(instance);
+        for (const i in instance[DATA]) {
+            delete instance[DATA][i];
+        }
+        return instance;
+    }
+
     static values(instance: BaseStorage) {
         const values: any = {};
         for (const [key, val] of instance) {
@@ -56,9 +82,12 @@ export default abstract class BaseStorage {
         return values;
     }
 
-    static update(instance: BaseStorage, data: Record<string, any>) {
+    static update(instance: BaseStorage, data: Record<string, any> | string, value?: any): BaseStorage {
+        if (typeof data === "string") {
+            return this.update(instance, {[data]: value});
+        }
         for (const o in data) {
-            if (!Object.prototype.hasOwnProperty.call(data, o)) {
+            if (!isOwn(data, o)) {
                 continue;
             }
             instance[SET](o, data[o]);
@@ -77,7 +106,7 @@ export default abstract class BaseStorage {
 
     public readonly [ID]: string;
     private readonly [OPTION]: IOption;
-    private readonly [DATA]: Record<string, any> = {};
+    private [DATA]: Record<string, any> = {};
     private readonly [DIRTY] = {
         remove: new Set<Key>(),
         update: new Set<Key>()
@@ -122,11 +151,7 @@ export default abstract class BaseStorage {
         }
         this[PENDING].update = true;
         setTimeout(() => {
-            for (const dirty of this[DIRTY].update) {
-                this[OPTION].driver.set(`${this[ID]}[${dirty}]`, JSON.stringify(this[DATA][dirty]));
-            }
-            this[PENDING].update = false
-            this[DIRTY].update.clear();
+            BaseStorage.savePending(this);
         }, 0)
         return this;
     }
@@ -139,9 +164,13 @@ export default abstract class BaseStorage {
         if (!val) {
             return;
         }
-        const data = JSON.parse(val);
-        this[DATA][key] = data;
-        return data;
+        try {
+            const data = JSON.parse(val);
+            this[DATA][key] = data;
+            return data;
+        } catch (e) {
+            return;
+        }
     }
 
     [REMOVE](key: Key) {

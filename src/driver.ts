@@ -7,13 +7,13 @@ export interface IDriver {
 
 const nullStorage: Storage = {
     setItem() {
-        console.warn('Storage not supported');
+        return;
     },
     getItem() {
-        console.warn('Storage not supported');
+        return null;
     },
     removeItem() {
-        console.warn('Storage not supported');
+        return;
     }
 } as any;
 

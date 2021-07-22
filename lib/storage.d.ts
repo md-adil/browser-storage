@@ -15,13 +15,15 @@ export interface IOption {
 export default abstract class BaseStorage {
     static keys(instance: BaseStorage): Generator<string, void, unknown>;
     static clear(instance: BaseStorage): number;
+    static savePending(instance: BaseStorage): void;
+    static clearCache(instance: BaseStorage): BaseStorage;
     static values(instance: BaseStorage): any;
-    static update(instance: BaseStorage, data: Record<string, any>): BaseStorage;
+    static update(instance: BaseStorage, data: Record<string, any> | string, value?: any): BaseStorage;
     static set(instance: BaseStorage, data: Record<string, any>): void;
     static id(instance: BaseStorage): string;
     readonly [ID]: string;
     private readonly [OPTION];
-    private readonly [DATA];
+    private [DATA];
     private readonly [DIRTY];
     private [PENDING];
     constructor(id?: string, option?: Partial<IOption>);

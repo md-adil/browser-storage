@@ -141,3 +141,24 @@ test("validity", () => {
     jest.advanceTimersToNextTimer();
     expect(sessionStorage.getItem(`validity[name]`)).toBe(JSON.stringify('Hello'));
 });
+
+test("setting undefined value", () => {
+    const test = new Test();
+    test.data = 1;
+    jest.advanceTimersToNextTimer();
+    test.data = undefined;
+    expect(test.data).toBe(undefined);
+    jest.advanceTimersToNextTimer();
+    expect(localStorage.getItem(`${Test.id(test)}[data]`)).toBeNull();
+})
+
+test("clear cache", () => {
+    const test = new Test();
+    const data = {name: 'No name'};
+    test.data = data;
+    expect(test.data).toBe(data);
+    Test.clearCache(test);
+    expect(test.data).not.toBe(data);
+    jest.advanceTimersToNextTimer();
+    expect(test.data).toEqual(data);
+});
