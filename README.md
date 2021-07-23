@@ -2,6 +2,7 @@
 
 You can use `localStorage` or `sessionStorage`. But is this convenient and performed like accessing property from an object ? No it's not.
 
+> It cache the data locally to reduce number of queries to the actual storage and serialization / de-serialization only if needed.
 
 ## Examples
 
