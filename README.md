@@ -26,7 +26,8 @@ store.person = {
     age: 22
 };
 ```
-> This will save the person in cache only, serialization and store in to localStorage will be happen in next event cycle.
+> This will save the person in cache only, serialization and store in to localStorage will happen in next event cycle.
+> So even if we save same property multiple times it will touch the localStorage only once.
 
 Getting person
 ```ts
@@ -37,7 +38,7 @@ console.log(store.person)
         lastName: "Doe",
         age: 22
     }
-> if the person is present in the cache, it will return from cache, otherwise will query localStorage, deserialize, save into cache and return person.
+> if the person is present in the cache, it will return from cache, otherwise it will query localStorage, deserialize, save into cache and return person.
 
 Getting all keys
 
@@ -72,6 +73,11 @@ Deleting
 
 ```ts
 delete store.person
+```
+or
+
+```ts
+store.person = undefined;
 ```
 
 Clear everything
@@ -204,7 +210,7 @@ store.toJSON().toJSON // 'Something else'
 
 ## Reference
 
-### instantiate
+### Instantiate
 
 ```ts
 import Store from "browser-config";
