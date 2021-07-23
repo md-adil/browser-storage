@@ -18,7 +18,7 @@ import Store from "browser-config";
 ```ts
 const store = new Store();
 ```
-Saving data to localStorage
+Saving person to localStorage
 ```ts
 store.person = {
     firstName: "John",
@@ -26,10 +26,9 @@ store.person = {
     age: 22
 };
 ```
-> This will save data in cache only, serialization and store in localStorage will be happen in next event cycle
+> This will save the person in cache only, serialization and store in to localStorage will be happen in next event cycle.
 
-
-Getting data
+Getting person
 ```ts
 console.log(store.person)
 ```
@@ -38,8 +37,7 @@ console.log(store.person)
         lastName: "Doe",
         age: 22
     }
-> if data is present in cache then get data from localStorage other will return from cache only.
-
+> if the person is present in the cache, it will return from cache, otherwise will query localStorage, deserialize, save into cache and return person.
 
 Getting all keys
 
