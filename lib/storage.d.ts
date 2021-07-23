@@ -14,6 +14,7 @@ export interface IOption {
 }
 export default abstract class BaseStorage {
     static keys(instance: BaseStorage): Generator<string, void, unknown>;
+    static driver(instance: BaseStorage): IDriver;
     static clear(instance: BaseStorage): number;
     static savePending(instance: BaseStorage): void;
     static clearCache(instance: BaseStorage): BaseStorage;
@@ -30,6 +31,7 @@ export default abstract class BaseStorage {
     [SET](key: Key, value: any): this;
     [GET](key: Key): any;
     [REMOVE](key: Key): this;
+    toJSON(): any;
     [Symbol.iterator](): Generator<any[], void, unknown>;
 }
 export {};

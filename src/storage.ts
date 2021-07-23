@@ -44,6 +44,10 @@ export default abstract class BaseStorage {
         }
     }
 
+    static driver(instance: BaseStorage) {
+        return instance[OPTION].driver;
+    }
+
     static clear(instance: BaseStorage) {
         let count = 0;
         for (const key of this.keys(instance)) {
@@ -191,6 +195,10 @@ export default abstract class BaseStorage {
             this[PENDING].remove = false;
         }, 0);
         return this;
+    }
+
+    toJSON() {
+        return BaseStorage.values(this);
     }
 
     *[Symbol.iterator]() {

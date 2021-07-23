@@ -6,6 +6,7 @@ export interface IDriver {
 }
 
 const nullStorage: Storage = {
+    length: 0,
     setItem() {
         return;
     },
@@ -44,11 +45,8 @@ export class DefaultDriver implements IDriver {
     }
 
     *keys() {
-        for (const i in this.engine) {
-            if (!Object.prototype.hasOwnProperty.call(this.engine, i)) {
-                continue;
-            }
-            yield i;
-        } 
+        for (let i = 0; i < this.engine.length; i++) {
+            yield this.engine.key(i)!;
+        }
     }
 }
