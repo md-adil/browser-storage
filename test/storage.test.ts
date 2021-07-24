@@ -122,12 +122,12 @@ test("custom driver", async () => {
 });
 
 test("validity", () => {
-    const test = new Test('validity', {
+    const test = new Test(undefined, {
         validity: "session"
     });
     test.name = "Hello";
     jest.advanceTimersToNextTimer();
-    expect(sessionStorage.getItem(`validity[name]`)).toBe(JSON.stringify('Hello'));
+    expect(sessionStorage.getItem(`${Test.id(test)}[name]`)).toBe(JSON.stringify('Hello'));
 });
 
 test("setting undefined value", () => {

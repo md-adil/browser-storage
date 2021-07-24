@@ -2,7 +2,7 @@
 
 You can use `localStorage` or `sessionStorage`. But is this convenient and performed like accessing property from an object ? No it's not.
 
-> It cache the data locally to reduce number of queries to the actual storage and serialization / de-serialization only if needed.
+> It cache the data locally to reduce number of queries to the actual storage and serialize / de-serialize only if needed.
 
 ## Examples
 
@@ -27,7 +27,7 @@ store.person = {
     age: 22
 };
 ```
-> This will save the person in cache only, serialization and store in to localStorage will happen in next event cycle.
+> This will save the person in cache only, serialization and store into localStorage will happen in next event cycle.
 > So even if we save same property multiple times it will touch the localStorage only once.
 
 Getting person
@@ -127,7 +127,7 @@ for (const [ key, value ] of config) {
 By default it will save to localStorage and it is permanent, you can save it sessionStorage as well.
 
 ```ts
-const config = new Store('some_id', {
+const config = new Store(undefined, {
    validity: "session"
 });
 
@@ -231,5 +231,5 @@ const store = new Store(id, option)
 * `Store.update(store: Store, data: object)` update values in bulk
 * `Store.set(store: Store, data: object)` it will delete all the existing value and set the provided object
 * `Store.clearCache(store: Store)` it will delete cache
-* `Store.savePending(store: Store)` It does save everything to cache only and put data to localStorage in next event, but you can force this to happen in the current cycle
+* `Store.savePending(store: Store)` force to save now into the storage instead of waiting for next event cycle.
 
